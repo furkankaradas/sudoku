@@ -5,6 +5,10 @@ WINDOW_NAME = "Sudoku"
 WIDTH = 800
 HEIGHT = 800
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRID_START = 115
+GRID_END = 585
+BLANK = 65
 
 
 class App:
@@ -31,5 +35,26 @@ class App:
         pass
 
     def draw(self):
-        self.window.fill(WHITE)
+        self.drawWindow()
+        self.drawGrid()
         pygame.display.update()
+
+    def drawWindow(self):
+        self.window.fill(WHITE)
+        pygame.draw.rect(self.window, BLACK, (GRID_START, GRID_START, GRID_END, GRID_END), 3)
+
+    def drawGrid(self):
+        for gridPosition in range(9):
+            if gridPosition % 3 == 0:
+                pygame.draw.line(self.window, BLACK, (GRID_START + (gridPosition * BLANK), GRID_START),
+                                 (GRID_START + (gridPosition * BLANK), GRID_START + GRID_END), 3)
+            else:
+                pygame.draw.line(self.window, BLACK, (GRID_START + (gridPosition * BLANK), GRID_START),
+                                 (GRID_START + (gridPosition * BLANK), GRID_START + GRID_END), 1)
+        for gridPosition in range(9):
+            if gridPosition % 3 == 0:
+                pygame.draw.line(self.window, BLACK, (GRID_START, GRID_START + (gridPosition * BLANK)),
+                                 (GRID_START + GRID_END, GRID_START + (gridPosition * BLANK)), 3)
+            else:
+                pygame.draw.line(self.window, BLACK, (GRID_START, GRID_START + (gridPosition * BLANK)),
+                                 (GRID_START + GRID_END, GRID_START + (gridPosition * BLANK)), 1)
