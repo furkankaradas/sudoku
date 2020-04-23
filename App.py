@@ -1,14 +1,16 @@
 import pygame
 import sys
 
-WINDOW_NAME = "Sudoku"
-WIDTH = 800
-HEIGHT = 800
+# Settings
+NEWGAMEBUTTON = (225, 40, 150, 50)
+SOLVEBUTTON = (425, 40, 150, 50)
 WHITE = (255, 255, 255)
+WINDOW_NAME = "Sudoku"
 BLACK = (0, 0, 0)
-SKYBLUE = (135, 206, 235)
 GRID_START = 115
 GRID_END = 585
+HEIGHT = 800
+WIDTH = 800
 BLANK = 65
 
 
@@ -17,6 +19,8 @@ class App:
         pygame.init()
         pygame.display.set_caption(WINDOW_NAME)
         self.window = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.newButton = pygame.Rect(NEWGAMEBUTTON)
+        self.solveButton = pygame.Rect(SOLVEBUTTON)
         self.running = True
         self.mousePosition = None
         self.selected = (GRID_START, GRID_START)
@@ -35,12 +39,17 @@ class App:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.selected = self.mouseOnGrid()
+                if self.newButton.collidepoint(self.mousePosition):
+                    print("New Game Button")
+                if self.solveButton.collidepoint(self.mousePosition):
+                    print("Solve Button")
 
     def update(self):
         self.mousePosition = pygame.mouse.get_pos()
 
     def draw(self):
         self.drawWindow()
+        self.drawButton()
         self.drawGrid()
         self.fillGrid()
         pygame.display.update()
@@ -48,6 +57,21 @@ class App:
     def drawWindow(self):
         self.window.fill(WHITE)
         pygame.draw.rect(self.window, BLACK, (GRID_START, GRID_START, GRID_END, GRID_END), 3)
+
+    def drawButton(self):
+        # New Game Button
+        pygame.draw.rect(self.window, BLACK, self.newButton, 3)
+        text = pygame.font.Font('freesansbold.ttf', 18).render('New Game', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = (NEWGAMEBUTTON[0] + 75, NEWGAMEBUTTON[1] + 25)
+        self.window.blit(text, textRect)
+
+        # Solve Button
+        pygame.draw.rect(self.window, BLACK, self.solveButton, 3)
+        text = pygame.font.Font('freesansbold.ttf', 18).render('Solve', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = (SOLVEBUTTON[0] + 75, SOLVEBUTTON[1] + 25)
+        self.window.blit(text, textRect)
 
     def drawGrid(self):
         # Horizontal Vertices
@@ -68,12 +92,10 @@ class App:
                                  (GRID_START + GRID_END, GRID_START + (gridPosition * BLANK)), 1)
 
     def fillGrid(self):
-        pygame.draw.rect(self.window, SKYBLUE,
+        pygame.draw.rect(self.window, BLACK,
                          (self.selected[0] * BLANK + GRID_START,
                           self.selected[1] * BLANK + GRID_START, BLANK, BLANK))
 
-    # posX = (self.mousePosition[0] - GRID_START) // BLANK
-    # posY = (self.mousePosition[1] - GRID_START) // BLANK
     def mouseOnGrid(self):
         if GRID_START < self.mousePosition[0] < GRID_START + GRID_END and GRID_START < self.mousePosition[1] \
                 < GRID_START + GRID_END:
